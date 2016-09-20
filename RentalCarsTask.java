@@ -27,7 +27,6 @@ public class RentalCarsTask{
 	/////////////4 MAIN TASKS BELOW
 
 	public void printAscendingOrder(ArrayList<VehicleList> listOfVehicles){
-
 		System.out.println("\nVechiles in ascending order price\n");
 
 		Collections.sort(listOfVehicles, new Comparator<VehicleList>(){
@@ -46,6 +45,7 @@ public class RentalCarsTask{
 
 	public void printSpecification(ArrayList<VehicleList> listOfVehicles){
 		System.out.println("\nVechiles specification details\n");
+
 		for(int i=0;i<listOfVehicles.size();i++){
 			VehicleList vehicle = listOfVehicles.get(i);
 			String toPrint = 	i+1 +".\t"+
@@ -67,7 +67,6 @@ public class RentalCarsTask{
 		System.out.println("\nHighest Rated supplier per car type\n");
 
 		ArrayList<String> uniqueVehicleNames = new ArrayList<String>();
-
 		for(int i=0;i<listOfVehicles.size();i++){
 			String carType = listOfVehicles.get(i).getSippDetailed().getCar();
 			if(!uniqueVehicleNames.contains(carType)){														//get all unique car types in a list
@@ -76,7 +75,6 @@ public class RentalCarsTask{
 		}
 
 		VehicleList[] vehicles = new VehicleList[uniqueVehicleNames.size()];								//make array of vehicles size amount of unique names
-
 		for(int i=0;i<listOfVehicles.size();i++){	
 			for(int j=0; j<uniqueVehicleNames.size();j++){													//for each record, find its appropriate car type
 				if(listOfVehicles.get(i).getSippDetailed().getCar().equals(uniqueVehicleNames.get(j))){					
@@ -129,9 +127,9 @@ public class RentalCarsTask{
 		}
 	}
 
-	/////////////HELPER METHODS BELOW
+	/////////////Get the list of vehicles.
 
-	public ArrayList<VehicleList> getListOfVehiclesFromJSONFile()throws Exception{
+	private ArrayList<VehicleList> getListOfVehiclesFromJSONFile()throws Exception{
 		Gson gson = new Gson();
 		JsonReader reader = new JsonReader(new FileReader(fileName));
 		
