@@ -11,8 +11,7 @@ public class RentalCarsTask{
 
 	public RentalCarsTask(){
 		try{
-			//getListOfVehiclesFromJSONFile();
-			listOfVehicles = getListOfVehiclesFromJSONFileGhettoVersion();
+			listOfVehicles = getListOfVehiclesFromJSONFile();
 
 			if (listOfVehicles!=null){
 				printAscendingOrder(listOfVehicles);
@@ -28,9 +27,10 @@ public class RentalCarsTask{
 	/////////////4 MAIN TASKS BELOW
 
 	public void printAscendingOrder(ArrayList<VehicleList> listOfVehicles){
-		System.out.println("\nVechiles in ascending order price\n");
-		Collections.sort(listOfVehicles, new Comparator<VehicleList>(){
 
+		System.out.println("\nVechiles in ascending order price\n");
+
+		Collections.sort(listOfVehicles, new Comparator<VehicleList>(){
 			@Override
 			public int compare(VehicleList v1, VehicleList v2){
 				return v1.getPrice().compareTo(v2.getPrice());
@@ -42,20 +42,26 @@ public class RentalCarsTask{
 		}
 	}
 
-
-
+	/////
 
 	public void printSpecification(ArrayList<VehicleList> listOfVehicles){
 		System.out.println("\nVechiles specification details\n");
 		for(int i=0;i<listOfVehicles.size();i++){
 			VehicleList vehicle = listOfVehicles.get(i);
-			System.out.println(i+1+".\t"+vehicle.getName() + " - " + vehicle.getSipp() + " - " + vehicle.getSIPPDetailed().returnFormattedSIPPInfo());
+			String toPrint = 	i+1 +".\t"+
+								vehicle.getName() + " - " + 
+								vehicle.getSipp() + " - " + 
+								vehicle.getSippDetailed().getCar()+", "+
+								vehicle.getSippDetailed().getDoor()+", "+
+								vehicle.getSippDetailed().getTransmission()+", "+
+								vehicle.getSippDetailed().getFuel();
+
+			System.out.println(toPrint);
 		}
 		
 	}
 
-
-
+	/////
 
 	public void printHighestRatedSupplier(ArrayList<VehicleList> listOfVehicles){
 		System.out.println("\nHighest Rated supplier per car type\n");
@@ -63,35 +69,39 @@ public class RentalCarsTask{
 		ArrayList<String> uniqueVehicleNames = new ArrayList<String>();
 
 		for(int i=0;i<listOfVehicles.size();i++){
-			if(!uniqueVehicleNames.contains(listOfVehicles.get(i).getSIPPDetailed().getCar())){		//get all unique names
-				uniqueVehicleNames.add(listOfVehicles.get(i).getSIPPDetailed().getCar());
+			String carType = listOfVehicles.get(i).getSippDetailed().getCar();
+			if(!uniqueVehicleNames.contains(carType)){														//get all unique car types in a list
+				uniqueVehicleNames.add(carType);
 			}
 		}
 
-		VehicleList[] vehicles = new VehicleList[uniqueVehicleNames.size()];						//make array of vehicles size amount of unique names
+		VehicleList[] vehicles = new VehicleList[uniqueVehicleNames.size()];								//make array of vehicles size amount of unique names
 
-		for(int i=0;i<listOfVehicles.size();i++){
-			for(int j=0; j<uniqueVehicleNames.size();j++){
-				if(listOfVehicles.get(i).getSIPPDetailed().getCar().equals(uniqueVehicleNames.get(j))){
-					if(vehicles[j]==null){
+		for(int i=0;i<listOfVehicles.size();i++){	
+			for(int j=0; j<uniqueVehicleNames.size();j++){													//for each record, find its appropriate car type
+				if(listOfVehicles.get(i).getSippDetailed().getCar().equals(uniqueVehicleNames.get(j))){					
+					if(vehicles[j]==null){																	//if list is empty, store it 
 						vehicles[j]=listOfVehicles.get(i);
-					}else{
+					}
+					else{																					//otherwise see if its the highest rated. If it is, store it.
 						if(listOfVehicles.get(i).getRating()>vehicles[j].getRating()){
 							vehicles[j]=listOfVehicles.get(i);
 						}
 					}
-					
 				}
 			}
 		}
 		for(int i=0;i<uniqueVehicleNames.size();i++){
-
-			System.out.println(i+1+".\t"+vehicles[i].getName()+" - "+vehicles[i].getSIPPDetailed().getCar()+" - "+vehicles[i].getSupplier()+" - "+vehicles[i].getRating());
+			String toPrint = 	i+1+".\t"+
+								vehicles[i].getName()+" - "+
+								vehicles[i].getSippDetailed().getCar()+" - "+
+								vehicles[i].getSupplier()+" - "+
+								vehicles[i].getRating();
+			System.out.println(toPrint);
 		}
 	}
 
-
-
+	/////
 
 	public void printVehicleScore(ArrayList<VehicleList> listOfVehicles){
 		System.out.println("\nVehicle score breakdown\n");
@@ -99,62 +109,34 @@ public class RentalCarsTask{
 		Collections.sort(listOfVehicles, new Comparator<VehicleList>(){
 			@Override
 			public int compare(VehicleList v1, VehicleList v2){
-				double v1SumOfScores = (getVehicleScore(v1)+v1.getRating());
-				double v2SumOfScores = (getVehicleScore(v2)+v2.getRating());
-				if(v1SumOfScores>v2SumOfScores){
+				if(v1.getSumOfScores()>v2.getSumOfScores()){
 					return -1;
 				}else{
 					return 1;
 				}
-				//return v1SumOfScores<v2SumOfScores;
 			}
 		});
 
 		for (int i=0; i<listOfVehicles.size(); i++){
 			VehicleList vehicle = listOfVehicles.get(i);
-
-			System.out.println(i+1+". "+vehicle.getName()+"\t"+getVehicleScore(vehicle)+"\t"+vehicle.getRating()+"\t"+(getVehicleScore(vehicle)+vehicle.getRating()));
+			String toPrint = 	i+1+". "+
+								vehicle.getName()+"\t"+
+								vehicle.getVehicleScore()+"\t"+
+								vehicle.getRating()+"\t"+
+								vehicle.getSumOfScores();
+			System.out.println(toPrint);
 
 		}
 	}
-
-
-
 
 	/////////////HELPER METHODS BELOW
 
-	public int getVehicleScore(VehicleList vehicle){
-		int score = 0;
-		if(vehicle.getSIPPDetailed().getTransmission().equals("Manual")){
-			score+=1;
-		}
-		if(vehicle.getSIPPDetailed().getTransmission().equals("Automatic")){
-			score+=5;
-		}
-		if(vehicle.getSIPPDetailed().getFuel().equals("Petrol, AC")){
-			score+=2;
-		}
-		return score;
-	}
-
-	public ArrayList<SIPP> buildSippList(ArrayList<VehicleList> listOfVehicles){
-		ArrayList<SIPP> SIPPList = new ArrayList<SIPP>();
-
-		for(int i=0;i<listOfVehicles.size();i++){
-			VehicleList vehicle = listOfVehicles.get(i);
-			char[] chars = vehicle.getSipp().toCharArray();
-			SIPPList.add(new SIPP(chars[0], chars[1], chars[2], chars[3]));
-			//SIPP sipp = new SIPP(chars[0], chars[1], chars[2], chars[3]);			
-		}
-		return SIPPList;
-	}
-
-	public ArrayList<VehicleList> getListOfVehiclesFromJSONFileGhettoVersion()throws Exception{
+	public ArrayList<VehicleList> getListOfVehiclesFromJSONFile()throws Exception{
 		Gson gson = new Gson();
 		JsonReader reader = new JsonReader(new FileReader(fileName));
 		
 		reader.beginObject();
-		reader.nextName();		//ghetto code to pass through first part of the file 
+		reader.nextName();		//pass through first part of the file 
 		reader.beginObject();
 		reader.nextName();
 		reader.beginArray();
@@ -162,20 +144,22 @@ public class RentalCarsTask{
 		ArrayList<VehicleList> listOfVehicles = new ArrayList<VehicleList>();
 		while(reader.hasNext()){
 
-			VehicleList vL = new VehicleList();
+			
 			reader.beginObject();
 			reader.nextName();
-			vL.setSipp(reader.nextString());
+			String sipp = reader.nextString();
 			reader.nextName();
-			vL.setName(reader.nextString());
+			String name = reader.nextString();
 			reader.nextName();
-			vL.setPrice(reader.nextDouble());
+			Double price = reader.nextDouble();
 			reader.nextName();
-			vL.setSupplier(reader.nextString());
+			String supplier = reader.nextString();
 			reader.nextName();
-			vL.setRating(reader.nextDouble());
+			Double rating = reader.nextDouble();
 			reader.endObject();
-			vL.makeSIPPDetails();
+
+			VehicleList vL = new VehicleList(sipp, name, price, supplier, rating);
+			
 			listOfVehicles.add(vL);
 		}
 		return listOfVehicles;

@@ -5,115 +5,93 @@ import javax.annotation.Generated;
 public class VehicleList {
 
     private String sipp=null;
-    private String name;
-    private Double price;
-    private String supplier;
-    private Double rating;
+    private String name=null;
+    private Double price=null;
+    private String supplier=null;
+    private Double rating=null;
 
-    private SIPP detailedSipp=null;
+    private SIPP sippDetailed =null;
+    private int vehicleScore;
 
-    public void makeSIPPDetails()throws Exception{
+    public VehicleList(String sipp, String name, Double price, String supplier, Double rating){
+
+        this.sipp = sipp;
+        this.name = name;
+        this.price = price;
+        this.supplier = supplier;
+        this.rating = rating;
+
         if(sipp!=null){
             char[] chars = sipp.toCharArray();
-            detailedSipp = new SIPP(chars[0], chars[1], chars[2], chars[3]);
-        }else{
-            throw new Exception("attempted to gather SIPP details without setting SIPP");
+            if(chars.length==4){
+                sippDetailed = new SIPP(chars[0], chars[1], chars[2], chars[3]);
+                vehicleScore = generateVehicleScore();
+            }
         }
-       
     }
 
-    public SIPP getSIPPDetailed(){
-        if(detailedSipp!=null){
-            return detailedSipp;
-        }else return null;
+    private int generateVehicleScore(){
+        int score = 0;
+        if(getSippDetailed().getTransmission().equals("Manual")){
+            score+=1;
+        }
+        if(getSippDetailed().getTransmission().equals("Automatic")){
+            score+=5;
+        }
+        if(getSippDetailed().getFuel().equals("Petrol, AC")){
+            score+=2;
+        }
+        return score;
     }
 
-    /**
-     * 
-     * @return
-     *     The sipp
-     */
+    public int getVehicleScore(){
+        return vehicleScore;
+    }
+
+    public Double getSumOfScores(){
+        return vehicleScore+rating;
+    }
+
+    public SIPP getSippDetailed(){
+        return sippDetailed;
+    }
+
     public String getSipp() {
         return sipp;
     }
 
-    /**
-     * 
-     * @param sipp
-     *     The sipp
-     */
     public void setSipp(String sipp) {
         this.sipp = sipp;
     }
 
-    /**
-     * 
-     * @return
-     *     The name
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * 
-     * @param name
-     *     The name
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * 
-     * @return
-     *     The price
-     */
     public Double getPrice() {
         return price;
     }
 
-    /**
-     * 
-     * @param price
-     *     The price
-     */
     public void setPrice(Double price) {
         this.price = price;
     }
 
-    /**
-     * 
-     * @return
-     *     The supplier
-     */
     public String getSupplier() {
         return supplier;
     }
 
-    /**
-     * 
-     * @param supplier
-     *     The supplier
-     */
     public void setSupplier(String supplier) {
         this.supplier = supplier;
     }
 
-    /**
-     * 
-     * @return
-     *     The rating
-     */
     public Double getRating() {
         return rating;
     }
 
-    /**
-     * 
-     * @param rating
-     *     The rating
-     */
     public void setRating(Double rating) {
         this.rating = rating;
     }

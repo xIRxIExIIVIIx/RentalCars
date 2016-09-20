@@ -12,10 +12,6 @@ public class SIPP{
 	public String getTransmission(){ return transmission; }
 	public String getFuel(){ return fuel; }
 
-	public String returnFormattedSIPPInfo(){
-		return(car+", "+door+", "+transmission+", "+fuel);
-	}
-
 	private String convertCarType(char c){
 		switch(c){
 			case 'M':
