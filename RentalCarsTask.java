@@ -21,7 +21,6 @@ public class RentalCarsTask{
 	/////////////Get the list of vehicles.
 
 	private ArrayList<VehicleList> getListOfVehiclesFromJSONFile()throws Exception{
-		Gson gson = new Gson();
 		JsonReader reader = new JsonReader(new FileReader(fileName));
 		
 		reader.beginObject();
